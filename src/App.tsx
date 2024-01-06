@@ -39,8 +39,8 @@ function App() {
         setFilter(value);
     }
     function addTask(title:string){
-            let newTask:TasksType = {id:v1(), title:title, isDone:false};
-            let newTasks:TasksType[]=[newTask, ...tasks];
+        let newTask:TasksType = {id:v1(), title:title, isDone:false};
+        let newTasks:TasksType[]=[newTask, ...tasks];
             setTasks(newTasks);
     }
 

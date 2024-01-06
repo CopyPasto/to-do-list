@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {ChangeEvent, KeyboardEvent, useState} from "react";
 import {FilterValueType} from "./App";
 
 export type TasksType = {
@@ -15,43 +15,53 @@ type PropsType = {
     addTask:(title:string)=>void
 }
 export function TodoList(props:PropsType) {
-
     const [string, setString]=useState("");
+    let onChangeFilterCompleted = function (){props.changeFilter("all")};
+    let onChangeFilterActive = function (){props.changeFilter("all")};
+    let onChangeFilterAll = function (){props.changeFilter("all")};
+    let addTask = function (){
+        if(string.trim() ===""){
+            return
+        }
+        props.addTask(string)
+        setString("")
+    }
 
-    let {title,task,removeTask, changeFilter,addTask} = props;
+    let onKeyUp = function (e: KeyboardEvent<HTMLInputElement>){ if(e.key === "Enter"){
+        if(string.trim()===""){
+            return
+        }
+        props.addTask(string);
+        setString("");
+        }
+    };
+    let changeValue = function (e:ChangeEvent<HTMLInputElement>){setString(e.currentTarget.value)};
 
 
-    const listLi = task.map(function (t){
+    const listLi = props.task.map(function (t){
         return <li key ={t.id}>
                     <input type="checkbox" checked={t.isDone} />
                     <span>{t.title}</span>
-                    <button onClick={()=>{removeTask(t.id)}}>x</button>
+                    <button onClick={()=>{props.removeTask(t.id)}}>x</button>
                 </li>
-    })
+    });
 
     return (
         <div>
-            <h3>{title}</h3>
+            <h3>{props.title}</h3>
             <div>
                 <input  value={string}
-                        onChange={(e)=>{
-                            setString(e.currentTarget.value)}}
-                        onKeyUp={(e)=>{
-                            if(e.key === "Enter"){
-                            addTask(string);
-                            setString("");
-                        }}}/>
-                <button onClick={()=>{
-                    addTask(string)
-                    setString("")
-                }}>+</button>
+                        onChange={(e)=>{changeValue(e)}}
+                        onKeyUp={(e)=>{onKeyUp(e)}}
+                />
+                <button onClick={()=>{addTask()}}>+</button>
                 <ul>
                     {listLi}
                 </ul>
                 <div>
-                    <button onClick={()=>{ changeFilter("all")}}>All</button>
-                    <button onClick={()=>{ changeFilter("active")}}>Active</button>
-                    <button onClick={()=>{ changeFilter("completed")}}>Completed</button>
+                    <button onClick={()=>{onChangeFilterAll()}}>All</button>
+                    <button onClick={()=>{onChangeFilterActive()}}>Active</button>
+                    <button onClick={()=>{ onChangeFilterCompleted()}}>Completed</button>
                 </div>
             </div>
 

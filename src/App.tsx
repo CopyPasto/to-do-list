@@ -5,7 +5,8 @@ import {TodoList} from "./TodoList";
 import {TasksType} from "./TodoList";
 import {v1} from 'uuid'
 
-export type FilterValueType="all" | "completed" | "active";
+export type FilterValueType = "all" | "completed" | "active";
+
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
         {id:v1(), title:"Game", isDone:true},
     ])
     const [filter, setFilter ] = useState<FilterValueType>("all")
+
 
     let newTasks:TasksType[] = tasks;
 
@@ -30,7 +32,7 @@ function App() {
         })
     }
     function removeTask (id:string){
-         let filterTask: Array<TasksType>  = tasks.filter((task):boolean=>{
+         let filterTask: Array<TasksType>  = newTasks.filter((task):boolean=>{
            return task.id !== id
         })
         setTasks(filterTask);
@@ -43,8 +45,14 @@ function App() {
         let newTasks:TasksType[]=[newTask, ...tasks];
             setTasks(newTasks);
     }
-
-
+    function changeTasksStatus(tasksId:string,isDone:boolean){
+        let task= tasks.find((t)=> {
+           return  t.id === tasksId;});
+        if(task){
+            task.isDone = isDone;
+        }
+      setTasks([...tasks]) ;
+    }
 
     return (
       <div className="App">
@@ -53,6 +61,8 @@ function App() {
                     removeTask={removeTask}
                     changeFilter={changeFilter}
                     addTask={addTask}
+                    changeTasksStatus={changeTasksStatus}
+                    filter={filter}
           />
       </div>
   );

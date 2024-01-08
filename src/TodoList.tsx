@@ -1,6 +1,5 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from "react";
 import { FilterValueType} from "./App";
-
 export type ErrorValue = null|string;
 export type TasksType = {
     id:string,
@@ -11,21 +10,22 @@ export type TasksType = {
 type PropsType = {
     title: string
     task: Array<TasksType>
-    removeTask :(id:string)=>void
-    changeFilter:(value:FilterValueType)=>void
-    addTask:(title:string)=>void
-    changeTasksStatus:(id:string,isDone :boolean)=>void
+    removeTask :(id:string,idList:string)=>void
+    changeFilter:(value:FilterValueType,todoListId:string)=>void
+    addTask:(title: string, id: string)=>void
+    changeTasksStatus:(id:string,idList :string,isDone :boolean)=>void
     filter:FilterValueType
+    id: string
 }
 export function TodoList(props:PropsType) {
     const [string, setString] = useState("");
     const[error,setError] = useState<ErrorValue>(null)
-    let onChangeFilterCompleted = function (){props.changeFilter("completed")};
-    let onChangeFilterActive = function (){props.changeFilter("active")};
-    let onChangeFilterAll = function (){props.changeFilter("all")};
+    let onChangeFilterCompleted = function (){props.changeFilter("completed",props.id)};
+    let onChangeFilterActive = function (){props.changeFilter("active",props.id)};
+    let onChangeFilterAll = function (){props.changeFilter("all",props.id)};
     let addTask = function (){
         if(string.trim() !==""){
-            props.addTask(string)
+            props.addTask(string,props.id)
             setString("")
         }else{
             setError("Title is required");
@@ -44,9 +44,9 @@ export function TodoList(props:PropsType) {
     };
 
     const listLi = props.task.map(function (t){
-        const onClickHandler = () => props.removeTask(t.id);
+        const onClickHandler = () => props.removeTask(t.id,props.id);
         const onChangeHandler = (e:ChangeEvent<HTMLInputElement>)=>{
-            props.changeTasksStatus(t.id,e.currentTarget.checked)}
+            props.changeTasksStatus(t.id,props.id, e.currentTarget.checked,)}
 
         return <li className={t.isDone ? "is-done" : ""} key ={t.id}>
                     <input type="checkbox"
